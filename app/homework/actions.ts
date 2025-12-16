@@ -69,7 +69,7 @@ export async function createTask(formData: FormData) {
 		}
 	}
 
-	const { error } = await supabase.from("tasks").insert({
+	const { error } = await supabase.from("task").insert({
 		user_id: claimsData.claims.sub,
 		title,
 		cadence,
@@ -82,7 +82,7 @@ export async function createTask(formData: FormData) {
 		throw new Error(error.message);
 	}
 
-	revalidatePath("/protected/tasks");
+	revalidatePath("/homework/task");
 }
 
 export async function toggleTask(formData: FormData) {
@@ -105,7 +105,7 @@ export async function toggleTask(formData: FormData) {
 	}
 
 	const { data: existing, error: existingError } = await supabase
-		.from("task_checkins")
+		.from("task_log")
 		.select("task_id")
 		.eq("task_id", taskId)
 		.eq("period_start", periodStart)
@@ -117,7 +117,7 @@ export async function toggleTask(formData: FormData) {
 
 	if (existing) {
 		const { error: deleteError } = await supabase
-			.from("task_checkins")
+			.from("task_log")
 			.delete()
 			.eq("task_id", taskId)
 			.eq("period_start", periodStart);
@@ -126,7 +126,7 @@ export async function toggleTask(formData: FormData) {
 			throw new Error(deleteError.message);
 		}
 	} else {
-		const { error: insertError } = await supabase.from("task_checkins").insert({
+		const { error: insertError } = await supabase.from("task_log").insert({
 			task_id: taskId,
 			user_id: claimsData.claims.sub,
 			period_start: periodStart,
@@ -137,6 +137,6 @@ export async function toggleTask(formData: FormData) {
 		}
 	}
 
-	revalidatePath("/protected/tasks");
+	revalidatePath("/homework/task");
 }
 
