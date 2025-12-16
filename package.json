@@ -1,7 +1,5 @@
 {
-  "name": "my-app",
-  "version": "0.1.0",
-  "private": true,
+  "name": "to-do",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
