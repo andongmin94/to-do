@@ -2,8 +2,10 @@ import { createClient } from "@/lib/supabase/server";
 import { Suspense } from "react";
 async function DefaultData() {
   const supabase = await createClient();
-  const { data: instruments } = await supabase.from("default").select();
-  return <pre>{JSON.stringify(instruments, null, 2)}</pre>;
+  const { data: instruments } = await supabase.from("task").select();
+  const title = instruments?.map((instrument) => instrument.title).join(", ");
+  //return <pre>{JSON.stringify(instruments, null, 2)}</pre>;
+  return <pre>{title}</pre>;
 }
 export default function Instruments() {
   return (
