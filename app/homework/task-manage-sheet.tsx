@@ -77,7 +77,7 @@ function formatCadence(row: TaskStatusRow) {
 
   const weekdayMap = ["일", "월", "화", "수", "목", "금", "토"];
   const weekdayLabel =
-    row.reset_weekday === null ? "?" : weekdayMap[row.reset_weekday] ?? "?";
+    row.reset_weekday === null ? "?" : (weekdayMap[row.reset_weekday] ?? "?");
 
   return `매주 ${weekdayLabel} ${timeLabel} 초기화`;
 }
@@ -122,11 +122,11 @@ export default function TaskManageSheet({
         <Button
           type="button"
           variant="outline"
-          className="fixed left-0 top-1/2 z-40 h-44 w-14 -translate-y-1/2 rounded-l-none rounded-r-lg border-l-0 bg-background/80 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60 flex flex-col items-center justify-center gap-2 cursor-pointer"
+          className="bg-background/80 supports-[backdrop-filter]:bg-background/60 fixed top-1/2 left-0 z-40 flex h-44 w-14 -translate-y-1/2 cursor-pointer flex-col items-center justify-center gap-2 rounded-l-none rounded-r-lg border-l-0 shadow-sm backdrop-blur"
           aria-label="숙제 관리 열기"
         >
           <PanelLeftIcon className="size-5" />
-          <span className="text-xs font-medium leading-tight text-muted-foreground text-center">
+          <span className="text-muted-foreground text-center text-xs leading-tight font-medium">
             숙제
             <br />
             관리
@@ -141,7 +141,7 @@ export default function TaskManageSheet({
           <SheetDescription>여기서 숙제 생성/삭제를 합니다.</SheetDescription>
         </SheetHeader>
 
-        <div className="flex flex-col gap-5 p-4 overflow-auto">
+        <div className="flex flex-col gap-5 overflow-auto p-4">
           <form
             action={createTaskAction}
             className="flex flex-col gap-3"
@@ -161,7 +161,7 @@ export default function TaskManageSheet({
 
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-2">
-                <label className="text-sm text-muted-foreground">주기</label>
+                <label className="text-muted-foreground text-sm">주기</label>
                 <input type="hidden" name="cadence" value={cadence} />
                 <Select
                   value={cadence}
@@ -185,7 +185,7 @@ export default function TaskManageSheet({
 
               {cadence === "weekly" ? (
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm text-muted-foreground">요일</label>
+                  <label className="text-muted-foreground text-sm">요일</label>
                   <input
                     type="hidden"
                     name="reset_weekday"
@@ -207,16 +207,19 @@ export default function TaskManageSheet({
                   </Select>
                 </div>
               ) : null}
-              
+
               <div className="flex flex-col gap-2">
-                <label className="text-sm text-muted-foreground">초기화</label>
+                <label className="text-muted-foreground text-sm">초기화</label>
                 <input type="hidden" name="reset_time" value={resetTime} />
                 <div className="flex items-center gap-2">
                   <Select
                     value={meridiem}
                     onValueChange={(v) => setMeridiem(v === "pm" ? "pm" : "am")}
                   >
-                    <SelectTrigger className="w-24 cursor-pointer" aria-label="오전/오후">
+                    <SelectTrigger
+                      className="w-24 cursor-pointer"
+                      aria-label="오전/오후"
+                    >
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent position="popper" align="start">
@@ -232,7 +235,10 @@ export default function TaskManageSheet({
                       setHour12(Number.isNaN(parsed) ? 12 : parsed);
                     }}
                   >
-                    <SelectTrigger className="w-24 cursor-pointer" aria-label="시">
+                    <SelectTrigger
+                      className="w-24 cursor-pointer"
+                      aria-label="시"
+                    >
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent position="popper" align="start">
@@ -255,7 +261,10 @@ export default function TaskManageSheet({
                       );
                     }}
                   >
-                    <SelectTrigger className="w-28 cursor-pointer" aria-label="분">
+                    <SelectTrigger
+                      className="w-28 cursor-pointer"
+                      aria-label="분"
+                    >
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent position="popper" align="start">
@@ -275,7 +284,7 @@ export default function TaskManageSheet({
 
           <div className="flex flex-col gap-2">
             {tasks.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 등록된 숙제가 없어요.
               </p>
             ) : (
@@ -285,8 +294,8 @@ export default function TaskManageSheet({
                   className="flex items-center justify-between gap-3 rounded-md border p-3"
                 >
                   <div className="min-w-0">
-                    <div className="font-medium truncate">{row.title}</div>
-                    <div className="text-xs text-muted-foreground">
+                    <div className="truncate font-medium">{row.title}</div>
+                    <div className="text-muted-foreground text-xs">
                       {formatCadence(row)}
                       {row.is_done ? " · 완료됨" : ""}
                     </div>
