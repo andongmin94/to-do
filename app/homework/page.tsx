@@ -121,7 +121,7 @@ export default async function TasksPage() {
                 <div className="min-w-0">
                   <div className="font-medium truncate">{row.title}</div>
                   <div className="text-xs text-muted-foreground">
-                    {formatCadence(row)} · TZ: {row.timezone}
+                    {formatCadence(row)} {/* · TZ: {row.timezone} */}
                   </div>
                 </div>
 
@@ -131,7 +131,7 @@ export default async function TasksPage() {
                     type="submit"
                     variant={row.is_done ? "secondary" : "default"}
                   >
-                    {row.is_done ? "함" : "안함"}
+                    {row.is_done ? "완료" : "미완료"}
                   </Button>
                 </form>
               </div>

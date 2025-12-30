@@ -19,11 +19,18 @@ create table if not exists public.task (
     (cadence = 'daily' and reset_weekday is null)
     or
     (cadence = 'weekly' and reset_weekday is not null)
-  ),
-  constraint task_reset_time_chk check (reset_time in ('00:00'::time, '06:00'::time))
+  )
 );
 
 create index if not exists task_user_id_idx on public.task (user_id);
+
+-- 이미 존재하는 DB에 예전 체크 제약(task_reset_time_chk)이 남아있을 수 있어 제거합니다.
+do $$
+begin
+  if to_regclass('public.task') is not null then
+    alter table public.task drop constraint if exists task_reset_time_chk;
+  end if;
+end $$;
 
 -- 2) Tables: task_log (완료 기록/도장판)
 create table if not exists public.task_log (
