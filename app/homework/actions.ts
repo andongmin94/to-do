@@ -44,7 +44,7 @@ export async function createTask(formData: FormData) {
   const resetTimeRaw = requiredString(formData.get("reset_time"), "reset_time");
   const resetTime = normalizeResetTime(resetTimeRaw);
   if (!/^([01]\d|2[0-3]):([0-5]\d)$/.test(resetTime)) {
-    throw new Error("리셋 시간 형식이 올바르지 않습니다. (예: 06:00)");
+    throw new Error("초기화 시간 형식이 올바르지 않습니다. (예: 06:00)");
   }
 
   const timezoneValue = formData.get("timezone");

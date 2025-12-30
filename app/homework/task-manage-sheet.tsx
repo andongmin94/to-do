@@ -6,6 +6,13 @@ import { PanelLeftIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Sheet,
   SheetContent,
   SheetDescription,
@@ -13,6 +20,42 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+
+function pad2(value: number) {
+  return String(value).padStart(2, "0");
+}
+
+function to24Hour(meridiem: "am" | "pm", hour12: number) {
+  if (meridiem === "am") {
+    return hour12 === 12 ? 0 : hour12;
+  }
+  return hour12 === 12 ? 12 : hour12 + 12;
+}
+
+function getNowParts() {
+  const now = new Date();
+  const hour24 = now.getHours();
+  const minute = now.getMinutes();
+  const meridiem: "am" | "pm" = hour24 < 12 ? "am" : "pm";
+  const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12;
+  return { meridiem, hour12, minute };
+}
+
+function formatKoreanTime(timeValue: string) {
+  const match = /^([01]\d|2[0-3]):([0-5]\d)/.exec(timeValue);
+  if (!match) {
+    return timeValue;
+  }
+
+  const hour24 = Number(match[1]);
+  const minute = match[2];
+  const meridiem = hour24 < 12 ? "오전" : "오후";
+  const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12;
+
+  return minute === "00"
+    ? `${meridiem} ${hour12}시`
+    : `${meridiem} ${hour12}시 ${minute}분`;
+}
 
 type TaskStatusRow = {
   id: string;
@@ -26,17 +69,17 @@ type TaskStatusRow = {
 };
 
 function formatCadence(row: TaskStatusRow) {
-  const timeLabel = row.reset_time.slice(0, 5);
+  const timeLabel = formatKoreanTime(row.reset_time);
 
   if (row.cadence === "daily") {
-    return `매일 ${timeLabel} 리셋`;
+    return `매일 ${timeLabel} 초기화`;
   }
 
   const weekdayMap = ["일", "월", "화", "수", "목", "금", "토"];
   const weekdayLabel =
     row.reset_weekday === null ? "?" : weekdayMap[row.reset_weekday] ?? "?";
 
-  return `매주 ${weekdayLabel} ${timeLabel} 리셋`;
+  return `매주 ${weekdayLabel} ${timeLabel} 초기화`;
 }
 
 type TaskManageSheetProps = {
@@ -51,10 +94,30 @@ export default function TaskManageSheet({
   deleteTaskAction,
 }: TaskManageSheetProps) {
   const tasks = rows.filter((r) => !r.archived);
+  const [open, setOpen] = React.useState(false);
   const [cadence, setCadence] = React.useState<"daily" | "weekly">("daily");
+  const [resetWeekday, setResetWeekday] = React.useState<string>("");
+  const [meridiem, setMeridiem] = React.useState<"am" | "pm">(
+    getNowParts().meridiem
+  );
+  const [hour12, setHour12] = React.useState<number>(getNowParts().hour12);
+  const [minute, setMinute] = React.useState<number>(getNowParts().minute);
+
+  const resetTime = `${pad2(to24Hour(meridiem, hour12))}:${pad2(minute)}`;
 
   return (
-    <Sheet>
+    <Sheet
+      open={open}
+      onOpenChange={(nextOpen) => {
+        setOpen(nextOpen);
+        if (nextOpen) {
+          const now = getNowParts();
+          setMeridiem(now.meridiem);
+          setHour12(now.hour12);
+          setMinute(now.minute);
+        }
+      }}
+    >
       <SheetTrigger asChild>
         <Button
           type="button"
@@ -79,7 +142,16 @@ export default function TaskManageSheet({
         </SheetHeader>
 
         <div className="flex flex-col gap-5 p-4 overflow-auto">
-          <form action={createTaskAction} className="flex flex-col gap-3">
+          <form
+            action={createTaskAction}
+            className="flex flex-col gap-3"
+            onSubmit={(e) => {
+              if (cadence === "weekly" && resetWeekday === "") {
+                e.preventDefault();
+                alert("매주를 선택한 경우 요일 선택이 필요합니다.");
+              }
+            }}
+          >
             <div className="flex gap-2">
               <Input name="title" placeholder="예) 영어단어 30개" required />
               <Button type="submit" className="cursor-pointer">
@@ -90,52 +162,111 @@ export default function TaskManageSheet({
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-2">
                 <label className="text-sm text-muted-foreground">주기</label>
-                <select
-                  name="cadence"
-                  defaultValue="daily"
-                  className="h-9 rounded-md border bg-transparent px-3 text-sm cursor-pointer"
-                  onChange={(e) => {
-                    const next =
-                      e.target.value === "weekly" ? "weekly" : "daily";
+                <input type="hidden" name="cadence" value={cadence} />
+                <Select
+                  value={cadence}
+                  onValueChange={(v) => {
+                    const next = v === "weekly" ? "weekly" : "daily";
                     setCadence(next);
+                    if (next === "daily") {
+                      setResetWeekday("");
+                    }
                   }}
                 >
-                  <option value="daily">매일</option>
-                  <option value="weekly">매주</option>
-                </select>
+                  <SelectTrigger className="w-full cursor-pointer">
+                    <SelectValue placeholder="선택" />
+                  </SelectTrigger>
+                  <SelectContent position="popper" align="start">
+                    <SelectItem value="daily">매일</SelectItem>
+                    <SelectItem value="weekly">매주</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               {cadence === "weekly" ? (
                 <div className="flex flex-col gap-2">
                   <label className="text-sm text-muted-foreground">요일</label>
-                  <select
+                  <input
+                    type="hidden"
                     name="reset_weekday"
-                    defaultValue=""
-                    required
-                    className="h-9 rounded-md border bg-transparent px-3 text-sm cursor-pointer"
-                  >
-                    <option value="">선택</option>
-                    <option value="0">일</option>
-                    <option value="1">월</option>
-                    <option value="2">화</option>
-                    <option value="3">수</option>
-                    <option value="4">목</option>
-                    <option value="5">금</option>
-                    <option value="6">토</option>
-                  </select>
+                    value={resetWeekday}
+                  />
+                  <Select value={resetWeekday} onValueChange={setResetWeekday}>
+                    <SelectTrigger className="w-full cursor-pointer">
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent position="popper" align="start">
+                      <SelectItem value="0">일</SelectItem>
+                      <SelectItem value="1">월</SelectItem>
+                      <SelectItem value="2">화</SelectItem>
+                      <SelectItem value="3">수</SelectItem>
+                      <SelectItem value="4">목</SelectItem>
+                      <SelectItem value="5">금</SelectItem>
+                      <SelectItem value="6">토</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               ) : null}
               
               <div className="flex flex-col gap-2">
-                <label className="text-sm text-muted-foreground">리셋</label>
-                <Input
-                  name="reset_time"
-                  type="time"
-                  defaultValue="00:00"
-                  step={60}
-                  required
-                  className="w-32 cursor-pointer"
-                />
+                <label className="text-sm text-muted-foreground">초기화</label>
+                <input type="hidden" name="reset_time" value={resetTime} />
+                <div className="flex items-center gap-2">
+                  <Select
+                    value={meridiem}
+                    onValueChange={(v) => setMeridiem(v === "pm" ? "pm" : "am")}
+                  >
+                    <SelectTrigger className="w-24 cursor-pointer" aria-label="오전/오후">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent position="popper" align="start">
+                      <SelectItem value="am">오전</SelectItem>
+                      <SelectItem value="pm">오후</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  <Select
+                    value={String(hour12)}
+                    onValueChange={(v) => {
+                      const parsed = Number(v);
+                      setHour12(Number.isNaN(parsed) ? 12 : parsed);
+                    }}
+                  >
+                    <SelectTrigger className="w-24 cursor-pointer" aria-label="시">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent position="popper" align="start">
+                      {Array.from({ length: 12 }, (_, i) => i + 1).map((h) => (
+                        <SelectItem key={h} value={String(h)}>
+                          {h}시
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  <Select
+                    value={String(minute)}
+                    onValueChange={(v) => {
+                      const parsed = Number(v);
+                      setMinute(
+                        Number.isNaN(parsed)
+                          ? 0
+                          : Math.max(0, Math.min(59, parsed))
+                      );
+                    }}
+                  >
+                    <SelectTrigger className="w-28 cursor-pointer" aria-label="분">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent position="popper" align="start">
+                      {Array.from({ length: 60 }, (_, i) => i).map((m) => (
+                        <SelectItem key={m} value={String(m)}>
+                          {pad2(m)}분
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
               <input type="hidden" name="timezone" value="Asia/Seoul" />

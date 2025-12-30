@@ -19,18 +19,34 @@ type TaskStatusRow = {
   is_done: boolean;
 };
 
+function formatKoreanTime(timeValue: string) {
+  const match = /^([01]\d|2[0-3]):([0-5]\d)/.exec(timeValue);
+  if (!match) {
+    return timeValue;
+  }
+
+  const hour24 = Number(match[1]);
+  const minute = match[2];
+  const meridiem = hour24 < 12 ? "오전" : "오후";
+  const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12;
+
+  return minute === "00"
+    ? `${meridiem} ${hour12}시`
+    : `${meridiem} ${hour12}시 ${minute}분`;
+}
+
 function formatCadence(row: TaskStatusRow) {
-  const timeLabel = row.reset_time.slice(0, 5);
+  const timeLabel = formatKoreanTime(row.reset_time);
 
   if (row.cadence === "daily") {
-    return `매일 ${timeLabel} 리셋`;
+    return `매일 ${timeLabel} 초기화`;
   }
 
   const weekdayMap = ["일", "월", "화", "수", "목", "금", "토"];
   const weekdayLabel =
     row.reset_weekday === null ? "?" : weekdayMap[row.reset_weekday] ?? "?";
 
-  return `매주 ${weekdayLabel} ${timeLabel} 리셋`;
+  return `매주 ${weekdayLabel} ${timeLabel} 초기화`;
 }
 
 export default async function TasksPage() {
@@ -58,7 +74,7 @@ export default async function TasksPage() {
           <div>
             <h1 className="text-2xl font-bold">숙제</h1>
             <p className="text-sm text-muted-foreground">
-              완료를 누르면 목록에서 사라지고, 리셋되면 다시 나타납니다.
+              완료를 누르면 목록에서 사라지고, 초기화되면 다시 나타납니다.
             </p>
           </div>
           <TaskManageSheet

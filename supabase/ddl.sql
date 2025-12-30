@@ -209,8 +209,8 @@ $$;
 comment on table public.task is '사용자가 등록한 할 일(숙제)의 규칙 정의 테이블';
 comment on column public.task.title is '할 일 제목';
 comment on column public.task.cadence is '반복 주기 (daily: 매일, weekly: 매주)';
-comment on column public.task.reset_time is '리셋 기준 시간 (예: 06:00이면 아침 6시에 체크박스 풀림)';
-comment on column public.task.reset_weekday is 'weekly일 경우 리셋 요일 (0:일요일 ~ 6:토요일)';
+comment on column public.task.reset_time is '초기화 기준 시간 (예: 06:00이면 아침 6시에 체크박스 풀림)';
+comment on column public.task.reset_weekday is 'weekly일 경우 초기화 요일 (0:일요일 ~ 6:토요일)';
 comment on column public.task.timezone is '사용자의 현지 시간대 (기본: Asia/Seoul)';
 
 comment on table public.task_log is '할 일 수행 기록 (도장판). 특정 구간(period_start)에 완료했는지 여부를 저장';
