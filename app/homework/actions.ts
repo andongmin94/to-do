@@ -82,7 +82,31 @@ export async function createTask(formData: FormData) {
     throw new Error(error.message);
   }
 
-  revalidatePath("/homework/task");
+  revalidatePath("/homework");
+}
+
+export async function deleteTask(formData: FormData) {
+  const supabase = await createClient();
+
+  const { data: claimsData, error: claimsError } =
+    await supabase.auth.getClaims();
+  if (claimsError || !claimsData?.claims?.sub) {
+    throw new Error("Not authenticated");
+  }
+
+  const taskId = requiredString(formData.get("task_id"), "task_id");
+
+  const { error } = await supabase
+    .from("task")
+    .delete()
+    .eq("id", taskId)
+    .eq("user_id", claimsData.claims.sub);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/homework");
 }
 
 export async function toggleTask(formData: FormData) {
@@ -137,5 +161,5 @@ export async function toggleTask(formData: FormData) {
     }
   }
 
-  revalidatePath("/homework/task");
+  revalidatePath("/homework");
 }

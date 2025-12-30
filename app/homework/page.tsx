@@ -1,9 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
-import { createTask, toggleTask } from "./actions";
+import { createTask, deleteTask, toggleTask } from "./actions";
+import TaskManageSheet from "./task-manage-sheet";
 
 import LoginCheck from "@/components/login-check";
 type TaskStatusRow = {
@@ -48,72 +48,33 @@ export default async function TasksPage() {
   }
 
   const rows = (data ?? []) as TaskStatusRow[];
+  const activeRows = rows.filter((row) => !row.archived && !row.is_done);
 
   return (
     <>
       <LoginCheck />
       <div className="flex-1 w-full flex flex-col gap-6">
-        <div>
-          <h1 className="text-2xl font-bold">숙제 관리</h1>
-          <p className="text-sm text-muted-foreground">
-            안함 → 딸각 → 함. 리셋 시간 지나면 자동으로 안함으로 보입니다.
-          </p>
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h1 className="text-2xl font-bold">숙제</h1>
+            <p className="text-sm text-muted-foreground">
+              완료를 누르면 목록에서 사라지고, 리셋되면 다시 나타납니다.
+            </p>
+          </div>
+          <TaskManageSheet
+            rows={rows}
+            createTaskAction={createTask}
+            deleteTaskAction={deleteTask}
+          />
         </div>
 
-        <form action={createTask} className="flex flex-col gap-3 max-w-xl">
-          <div className="flex gap-2">
-            <Input name="title" placeholder="예) 영어단어 30개" required />
-            <Button type="submit">추가</Button>
-          </div>
-
-          <div className="flex flex-wrap gap-2 items-center">
-            <label className="text-sm text-muted-foreground">주기</label>
-            <select
-              name="cadence"
-              defaultValue="daily"
-              className="h-9 rounded-md border bg-transparent px-3 text-sm"
-            >
-              <option value="daily">매일</option>
-              <option value="weekly">매주</option>
-            </select>
-
-            <label className="text-sm text-muted-foreground">리셋</label>
-            <Input
-              name="reset_time"
-              type="time"
-              defaultValue="00:00"
-              step={60}
-              required
-              className="w-32"
-            />
-
-            <label className="text-sm text-muted-foreground">요일(매주)</label>
-            <select
-              name="reset_weekday"
-              defaultValue=""
-              className="h-9 rounded-md border bg-transparent px-3 text-sm"
-            >
-              <option value="">-</option>
-              <option value="0">일</option>
-              <option value="1">월</option>
-              <option value="2">화</option>
-              <option value="3">수</option>
-              <option value="4">목</option>
-              <option value="5">금</option>
-              <option value="6">토</option>
-            </select>
-
-            <input type="hidden" name="timezone" value="Asia/Seoul" />
-          </div>
-        </form>
-
         <div className="flex flex-col gap-2">
-          {rows.length === 0 ? (
+          {activeRows.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              아직 숙제가 없어요. 위에서 하나 추가해보세요.
+              지금 해야 할 숙제가 없어요.
             </p>
           ) : (
-            rows.map((row) => (
+            activeRows.map((row) => (
               <div
                 key={row.id}
                 className="flex items-center justify-between gap-3 rounded-md border p-3"
@@ -127,12 +88,7 @@ export default async function TasksPage() {
 
                 <form action={toggleTask}>
                   <input type="hidden" name="task_id" value={row.id} />
-                  <Button
-                    type="submit"
-                    variant={row.is_done ? "secondary" : "default"}
-                  >
-                    {row.is_done ? "완료" : "미완료"}
-                  </Button>
+                  <Button type="submit">완료</Button>
                 </form>
               </div>
             ))
