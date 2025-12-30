@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { PanelLeftIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,8 +55,19 @@ export default function TaskManageSheet({
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button type="button" variant="outline">
-          숙제 관리
+        <Button
+          type="button"
+          variant="outline"
+          className="fixed left-0 top-1/2 z-40 h-44 w-14 -translate-y-1/2 rounded-l-none rounded-r-lg border-l-0 bg-background/80 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60 flex flex-col items-center justify-center gap-2"
+          aria-label="숙제 관리 열기"
+        >
+          <PanelLeftIcon className="size-5" />
+          <span className="text-xs font-medium leading-tight text-muted-foreground text-center">
+            숙제
+            <br />
+            관리
+          </span>
+          <span className="sr-only">숙제 관리 열기</span>
         </Button>
       </SheetTrigger>
 
@@ -93,7 +105,9 @@ export default function TaskManageSheet({
                 className="w-32"
               />
 
-              <label className="text-sm text-muted-foreground">요일(매주)</label>
+              <label className="text-sm text-muted-foreground">
+                요일(매주)
+              </label>
               <select
                 name="reset_weekday"
                 defaultValue=""
@@ -115,7 +129,9 @@ export default function TaskManageSheet({
 
           <div className="flex flex-col gap-2">
             {tasks.length === 0 ? (
-              <p className="text-sm text-muted-foreground">등록된 숙제가 없어요.</p>
+              <p className="text-sm text-muted-foreground">
+                등록된 숙제가 없어요.
+              </p>
             ) : (
               tasks.map((row) => (
                 <div
