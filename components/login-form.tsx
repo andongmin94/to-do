@@ -39,7 +39,7 @@ export function LoginForm({
       });
       if (error) throw error;
       // Update this route to redirect to an authenticated route. The user already has an active session.
-      router.push("/homework");
+      router.push("/");
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "오류가 발생했습니다.");
     } finally {

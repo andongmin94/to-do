@@ -82,7 +82,7 @@ export async function createTask(formData: FormData) {
     throw new Error(error.message);
   }
 
-  revalidatePath("/homework");
+  revalidatePath("/");
 }
 
 export async function deleteTask(formData: FormData) {
@@ -106,7 +106,7 @@ export async function deleteTask(formData: FormData) {
     throw new Error(error.message);
   }
 
-  revalidatePath("/homework");
+  revalidatePath("/");
 }
 
 export async function toggleTask(formData: FormData) {
@@ -161,5 +161,5 @@ export async function toggleTask(formData: FormData) {
     }
   }
 
-  revalidatePath("/homework");
+  revalidatePath("/");
 }

@@ -135,16 +135,16 @@ export default function TaskManageSheet({
         </Button>
       </SheetTrigger>
 
-      <SheetContent side="left" className="gap-0 p-0">
+      <SheetContent side="left" className="flex flex-col gap-0 p-0">
         <SheetHeader className="border-b">
           <SheetTitle>숙제 관리</SheetTitle>
           <SheetDescription>여기서 숙제 생성/삭제를 합니다.</SheetDescription>
         </SheetHeader>
 
-        <div className="flex flex-col gap-5 overflow-auto p-4">
+        <div className="flex min-h-0 flex-1 flex-col">
           <form
             action={createTaskAction}
-            className="flex flex-col gap-3"
+            className="shrink-0 border-b p-4"
             onSubmit={(e) => {
               if (cadence === "weekly" && resetWeekday === "") {
                 e.preventDefault();
@@ -152,137 +152,141 @@ export default function TaskManageSheet({
               }
             }}
           >
-            <div className="flex gap-2">
-              <Input name="title" placeholder="예) 영어단어 30개" required />
-              <Button type="submit" className="cursor-pointer">
-                추가
-              </Button>
-            </div>
-
             <div className="flex flex-col gap-3">
-              <div className="flex flex-col gap-2">
-                <label className="text-muted-foreground text-sm">주기</label>
-                <input type="hidden" name="cadence" value={cadence} />
-                <Select
-                  value={cadence}
-                  onValueChange={(v) => {
-                    const next = v === "weekly" ? "weekly" : "daily";
-                    setCadence(next);
-                    if (next === "daily") {
-                      setResetWeekday("");
-                    }
-                  }}
-                >
-                  <SelectTrigger className="w-full cursor-pointer">
-                    <SelectValue placeholder="선택" />
-                  </SelectTrigger>
-                  <SelectContent position="popper" align="start">
-                    <SelectItem value="daily">매일</SelectItem>
-                    <SelectItem value="weekly">매주</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="flex gap-2">
+                <Input name="title" placeholder="예) 영어단어 30개" required />
+                <Button type="submit" className="cursor-pointer">
+                  추가
+                </Button>
               </div>
 
-              {cadence === "weekly" ? (
+              <div className="flex flex-col gap-3">
                 <div className="flex flex-col gap-2">
-                  <label className="text-muted-foreground text-sm">요일</label>
-                  <input
-                    type="hidden"
-                    name="reset_weekday"
-                    value={resetWeekday}
-                  />
-                  <Select value={resetWeekday} onValueChange={setResetWeekday}>
+                  <label className="text-muted-foreground text-sm">주기</label>
+                  <input type="hidden" name="cadence" value={cadence} />
+                  <Select
+                    value={cadence}
+                    onValueChange={(v) => {
+                      const next = v === "weekly" ? "weekly" : "daily";
+                      setCadence(next);
+                      if (next === "daily") {
+                        setResetWeekday("");
+                      }
+                    }}
+                  >
                     <SelectTrigger className="w-full cursor-pointer">
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent position="popper" align="start">
-                      <SelectItem value="0">일</SelectItem>
-                      <SelectItem value="1">월</SelectItem>
-                      <SelectItem value="2">화</SelectItem>
-                      <SelectItem value="3">수</SelectItem>
-                      <SelectItem value="4">목</SelectItem>
-                      <SelectItem value="5">금</SelectItem>
-                      <SelectItem value="6">토</SelectItem>
+                      <SelectItem value="daily">매일</SelectItem>
+                      <SelectItem value="weekly">매주</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-              ) : null}
 
-              <div className="flex flex-col gap-2">
-                <label className="text-muted-foreground text-sm">초기화</label>
-                <input type="hidden" name="reset_time" value={resetTime} />
-                <div className="flex items-center gap-2">
-                  <Select
-                    value={meridiem}
-                    onValueChange={(v) => setMeridiem(v === "pm" ? "pm" : "am")}
-                  >
-                    <SelectTrigger
-                      className="w-24 cursor-pointer"
-                      aria-label="오전/오후"
-                    >
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent position="popper" align="start">
-                      <SelectItem value="am">오전</SelectItem>
-                      <SelectItem value="pm">오후</SelectItem>
-                    </SelectContent>
-                  </Select>
+                {cadence === "weekly" ? (
+                  <div className="flex flex-col gap-2">
+                    <label className="text-muted-foreground text-sm">요일</label>
+                    <input
+                      type="hidden"
+                      name="reset_weekday"
+                      value={resetWeekday}
+                    />
+                    <Select value={resetWeekday} onValueChange={setResetWeekday}>
+                      <SelectTrigger className="w-full cursor-pointer">
+                        <SelectValue placeholder="선택" />
+                      </SelectTrigger>
+                      <SelectContent position="popper" align="start">
+                        <SelectItem value="0">일</SelectItem>
+                        <SelectItem value="1">월</SelectItem>
+                        <SelectItem value="2">화</SelectItem>
+                        <SelectItem value="3">수</SelectItem>
+                        <SelectItem value="4">목</SelectItem>
+                        <SelectItem value="5">금</SelectItem>
+                        <SelectItem value="6">토</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                ) : null}
 
-                  <Select
-                    value={String(hour12)}
-                    onValueChange={(v) => {
-                      const parsed = Number(v);
-                      setHour12(Number.isNaN(parsed) ? 12 : parsed);
-                    }}
-                  >
-                    <SelectTrigger
-                      className="w-24 cursor-pointer"
-                      aria-label="시"
+                <div className="flex flex-col gap-2">
+                  <label className="text-muted-foreground text-sm">초기화</label>
+                  <input type="hidden" name="reset_time" value={resetTime} />
+                  <div className="flex items-center gap-2">
+                    <Select
+                      value={meridiem}
+                      onValueChange={(v) =>
+                        setMeridiem(v === "pm" ? "pm" : "am")
+                      }
                     >
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent position="popper" align="start">
-                      {Array.from({ length: 12 }, (_, i) => i + 1).map((h) => (
-                        <SelectItem key={h} value={String(h)}>
-                          {h}시
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                      <SelectTrigger
+                        className="w-24 cursor-pointer"
+                        aria-label="오전/오후"
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent position="popper" align="start">
+                        <SelectItem value="am">오전</SelectItem>
+                        <SelectItem value="pm">오후</SelectItem>
+                      </SelectContent>
+                    </Select>
 
-                  <Select
-                    value={String(minute)}
-                    onValueChange={(v) => {
-                      const parsed = Number(v);
-                      setMinute(
-                        Number.isNaN(parsed)
-                          ? 0
-                          : Math.max(0, Math.min(59, parsed))
-                      );
-                    }}
-                  >
-                    <SelectTrigger
-                      className="w-28 cursor-pointer"
-                      aria-label="분"
+                    <Select
+                      value={String(hour12)}
+                      onValueChange={(v) => {
+                        const parsed = Number(v);
+                        setHour12(Number.isNaN(parsed) ? 12 : parsed);
+                      }}
                     >
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent position="popper" align="start">
-                      {Array.from({ length: 60 }, (_, i) => i).map((m) => (
-                        <SelectItem key={m} value={String(m)}>
-                          {pad2(m)}분
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                      <SelectTrigger
+                        className="w-24 cursor-pointer"
+                        aria-label="시"
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent position="popper" align="start">
+                        {Array.from({ length: 12 }, (_, i) => i + 1).map((h) => (
+                          <SelectItem key={h} value={String(h)}>
+                            {h}시
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    <Select
+                      value={String(minute)}
+                      onValueChange={(v) => {
+                        const parsed = Number(v);
+                        setMinute(
+                          Number.isNaN(parsed)
+                            ? 0
+                            : Math.max(0, Math.min(59, parsed))
+                        );
+                      }}
+                    >
+                      <SelectTrigger
+                        className="w-28 cursor-pointer"
+                        aria-label="분"
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent position="popper" align="start">
+                        {Array.from({ length: 60 }, (_, i) => i).map((m) => (
+                          <SelectItem key={m} value={String(m)}>
+                            {pad2(m)}분
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
+
+                <input type="hidden" name="timezone" value="Asia/Seoul" />
               </div>
-
-              <input type="hidden" name="timezone" value="Asia/Seoul" />
             </div>
           </form>
 
-          <div className="flex flex-col gap-2">
+          <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-auto p-4">
             {tasks.length === 0 ? (
               <p className="text-muted-foreground text-sm">
                 등록된 숙제가 없어요.
