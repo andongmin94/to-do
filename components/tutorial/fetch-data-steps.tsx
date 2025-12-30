@@ -8,9 +8,9 @@ const create = `create table notes (
 
 insert into notes(title)
 values
-  ('Today I created a Supabase project.'),
-  ('I added some data and queried it from Next.js.'),
-  ('It was awesome!');
+  ('오늘 Supabase 프로젝트를 만들었다.'),
+  ('데이터를 추가하고 Next.js에서 조회해 봤다.'),
+  ('아주 좋았다!');
 `.trim();
 
 const rls = `alter table notes enable row level security;
@@ -52,101 +52,99 @@ export default function Page() {
 export function FetchDataSteps() {
   return (
     <ol className="flex flex-col gap-6">
-      <TutorialStep title="Create some tables and insert some data">
+      <TutorialStep title="테이블 생성 및 예시 데이터 추가">
         <p>
-          Head over to the{" "}
+          Supabase 프로젝트의{" "}
           <a
             href="https://supabase.com/dashboard/project/_/editor"
             className="font-bold hover:underline text-foreground/80"
             target="_blank"
             rel="noreferrer"
           >
-            Table Editor
+            테이블 에디터
           </a>{" "}
-          for your Supabase project to create a table and insert some example
-          data. If you&apos;re stuck for creativity, you can copy and paste the
-          following into the{" "}
+          로 이동해서 테이블을 만들고 예시 데이터를 넣어보세요. 예시가 필요하다면
+          아래 내용을{" "}
           <a
             href="https://supabase.com/dashboard/project/_/sql/new"
             className="font-bold hover:underline text-foreground/80"
             target="_blank"
             rel="noreferrer"
           >
-            SQL Editor
+            SQL 에디터
           </a>{" "}
-          and click RUN!
+          에 붙여넣고 RUN을 눌러 실행하면 됩니다.
         </p>
         <CodeBlock code={create} />
       </TutorialStep>
 
-      <TutorialStep title="Enable Row Level Security (RLS)">
+      <TutorialStep title="Row Level Security(RLS) 설정">
         <p>
-          Supabase enables Row Level Security (RLS) by default. To query data
-          from your <code>notes</code> table, you need to add a policy. You can
-          do this in the{" "}
+          Supabase는 기본적으로 Row Level Security(RLS)가 활성화되어 있습니다.
+          <code>notes</code> 테이블에서 데이터를 조회하려면 정책(policy)을 추가해야
+          합니다. 이는{" "}
           <a
             href="https://supabase.com/dashboard/project/_/editor"
             className="font-bold hover:underline text-foreground/80"
             target="_blank"
             rel="noreferrer"
           >
-            Table Editor
+            테이블 에디터
           </a>{" "}
-          or via the{" "}
+          또는{" "}
           <a
             href="https://supabase.com/dashboard/project/_/sql/new"
             className="font-bold hover:underline text-foreground/80"
             target="_blank"
             rel="noreferrer"
           >
-            SQL Editor
+            SQL 에디터
           </a>
-          .
+          에서 설정할 수 있습니다.
         </p>
         <p>
-          For example, you can run the following SQL to allow public read
-          access:
+          예를 들어, 아래 SQL을 실행하면 누구나 읽을 수 있도록 설정할 수 있습니다.
         </p>
         <CodeBlock code={rls} />
         <p>
-          You can learn more about RLS in the{" "}
+          RLS에 대한 자세한 내용은{" "}
           <a
             href="https://supabase.com/docs/guides/auth/row-level-security"
             className="font-bold hover:underline text-foreground/80"
             target="_blank"
             rel="noreferrer"
           >
-            Supabase docs
+            Supabase 문서
           </a>
-          .
+          에서 확인할 수 있습니다.
         </p>
       </TutorialStep>
 
-      <TutorialStep title="Query Supabase data from Next.js">
+      <TutorialStep title="Next.js에서 Supabase 데이터 조회">
         <p>
-          To create a Supabase client and query data from an Async Server
-          Component, create a new page.tsx file at{" "}
+          Supabase 클라이언트를 만들고 Async Server Component에서 데이터를 조회하려면
+          아래 경로에 page.tsx 파일을 새로 만들고{" "}
           <span className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-medium text-secondary-foreground border">
             /app/notes/page.tsx
           </span>{" "}
-          and add the following.
+          다음 코드를 추가하세요.
         </p>
         <CodeBlock code={server} />
-        <p>Alternatively, you can use a Client Component.</p>
+        <p>또는 Client Component를 사용해도 됩니다.</p>
         <CodeBlock code={client} />
       </TutorialStep>
 
-      <TutorialStep title="Explore the Supabase UI Library">
+      <TutorialStep title="Supabase UI 라이브러리 둘러보기">
         <p>
-          Head over to the{" "}
+          아래의{" "}
           <a
             href="https://supabase.com/ui"
             className="font-bold hover:underline text-foreground/80"
           >
-            Supabase UI library
+            Supabase UI 라이브러리
           </a>{" "}
-          and try installing some blocks. For example, you can install a
-          Realtime Chat block by running:
+          에서 블록을 설치해 보세요. 예를 들어, 아래 명령으로 Realtime Chat 블록을
+          설치할 수 있습니다.
         </p>
         <CodeBlock
           code={
@@ -155,8 +153,8 @@ export function FetchDataSteps() {
         />
       </TutorialStep>
 
-      <TutorialStep title="Build in a weekend and scale to millions!">
-        <p>You&apos;re ready to launch your product to the world! 🚀</p>
+      <TutorialStep title="주말에 만들고, 크게 성장시키기!">
+        <p>이제 세상에 제품을 공개할 준비가 됐어요!</p>
       </TutorialStep>
     </ol>
   );

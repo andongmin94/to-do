@@ -3,9 +3,9 @@ import { TutorialStep } from "./tutorial-step";
 export function ConnectSupabaseSteps() {
   return (
     <ol className="flex flex-col gap-6">
-      <TutorialStep title="Create Supabase project">
+      <TutorialStep title="Supabase 프로젝트 만들기">
         <p>
-          Head over to{" "}
+          아래 링크로 이동해서{" "}
           <a
             href="https://app.supabase.com/project/_/settings/api"
             target="_blank"
@@ -14,47 +14,46 @@ export function ConnectSupabaseSteps() {
           >
             database.new
           </a>{" "}
-          and create a new Supabase project.
+          에서 새 Supabase 프로젝트를 만드세요.
         </p>
       </TutorialStep>
 
-      <TutorialStep title="Declare environment variables">
+      <TutorialStep title="환경 변수 설정">
         <p>
-          Rename the{" "}
+          Next.js 앱에서{" "}
           <span className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-medium text-secondary-foreground border">
             .env.example
           </span>{" "}
-          file in your Next.js app to{" "}
+          파일 이름을{" "}
           <span className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-medium text-secondary-foreground border">
             .env.local
           </span>{" "}
-          and populate with values from{" "}
+          로 바꾸고, 아래 링크의{" "}
           <a
             href="https://app.supabase.com/project/_/settings/api"
             target="_blank"
             className="font-bold hover:underline text-foreground/80"
             rel="noreferrer"
           >
-            your Supabase project&apos;s API Settings
+            Supabase 프로젝트 API 설정
           </a>
-          .
+          값을 채워 넣으세요.
         </p>
       </TutorialStep>
 
-      <TutorialStep title="Restart your Next.js development server">
+      <TutorialStep title="Next.js 개발 서버 재시작">
         <p>
-          You may need to quit your Next.js development server and run{" "}
+          환경 변수를 다시 읽히려면 개발 서버를 종료하고{" "}
           <span className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-medium text-secondary-foreground border">
             npm run dev
           </span>{" "}
-          again to load the new environment variables.
+          를 다시 실행해야 할 수 있습니다.
         </p>
       </TutorialStep>
 
-      <TutorialStep title="Refresh the page">
+      <TutorialStep title="페이지 새로고침">
         <p>
-          You may need to refresh the page for Next.js to load the new
-          environment variables.
+          Next.js가 새 환경 변수를 반영하도록 페이지를 새로고침해야 할 수 있습니다.
         </p>
       </TutorialStep>
     </ol>

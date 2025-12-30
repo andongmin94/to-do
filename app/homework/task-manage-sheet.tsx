@@ -20,129 +20,52 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+        <div className="flex h-full min-h-0 flex-col">
+          <div className="flex-1 min-h-0 overflow-auto p-4">
+            <div className="flex flex-col gap-2">
+              {tasks.length === 0 ? (
+                <p className="text-sm text-muted-foreground">
+                  등록된 숙제가 없어요.
+                </p>
+              ) : (
+                tasks.map((row) => (
+                  <div
+                    key={row.id}
+                    className="flex items-center justify-between gap-3 rounded-md border p-3"
+                  >
+                    <div className="min-w-0">
+                      <div className="font-medium truncate">{row.title}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {formatCadence(row)}
+                        {row.is_done ? " · 완료됨" : ""}
+                      </div>
+                    </div>
 
-function pad2(value: number) {
-  return String(value).padStart(2, "0");
-}
+                    <form
+                      action={deleteTaskAction}
+                      onSubmit={(e) => {
+                        if (!confirm("정말 삭제할까요?")) {
+                          e.preventDefault();
+                        }
+                      }}
+                    >
+                      <input type="hidden" name="task_id" value={row.id} />
+                      <Button
+                        type="submit"
+                        variant="destructive"
+                        size="sm"
+                        className="cursor-pointer"
+                      >
+                        삭제
+                      </Button>
+                    </form>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
 
-function to24Hour(meridiem: "am" | "pm", hour12: number) {
-  if (meridiem === "am") {
-    return hour12 === 12 ? 0 : hour12;
-  }
-  return hour12 === 12 ? 12 : hour12 + 12;
-}
-
-function getNowParts() {
-  const now = new Date();
-  const hour24 = now.getHours();
-  const minute = now.getMinutes();
-  const meridiem: "am" | "pm" = hour24 < 12 ? "am" : "pm";
-  const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12;
-  return { meridiem, hour12, minute };
-}
-
-function formatKoreanTime(timeValue: string) {
-  const match = /^([01]\d|2[0-3]):([0-5]\d)/.exec(timeValue);
-  if (!match) {
-    return timeValue;
-  }
-
-  const hour24 = Number(match[1]);
-  const minute = match[2];
-  const meridiem = hour24 < 12 ? "오전" : "오후";
-  const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12;
-
-  return minute === "00"
-    ? `${meridiem} ${hour12}시`
-    : `${meridiem} ${hour12}시 ${minute}분`;
-}
-
-type TaskStatusRow = {
-  id: string;
-  title: string;
-  cadence: "daily" | "weekly";
-  reset_time: string;
-  reset_weekday: number | null;
-  timezone: string;
-  archived: boolean;
-  is_done: boolean;
-};
-
-function formatCadence(row: TaskStatusRow) {
-  const timeLabel = formatKoreanTime(row.reset_time);
-
-  if (row.cadence === "daily") {
-    return `매일 ${timeLabel} 초기화`;
-  }
-
-  const weekdayMap = ["일", "월", "화", "수", "목", "금", "토"];
-  const weekdayLabel =
-    row.reset_weekday === null ? "?" : weekdayMap[row.reset_weekday] ?? "?";
-
-  return `매주 ${weekdayLabel} ${timeLabel} 초기화`;
-}
-
-type TaskManageSheetProps = {
-  rows: TaskStatusRow[];
-  createTaskAction: (formData: FormData) => Promise<void>;
-  deleteTaskAction: (formData: FormData) => Promise<void>;
-};
-
-export default function TaskManageSheet({
-  rows,
-  createTaskAction,
-  deleteTaskAction,
-}: TaskManageSheetProps) {
-  const tasks = rows.filter((r) => !r.archived);
-  const [open, setOpen] = React.useState(false);
-  const [cadence, setCadence] = React.useState<"daily" | "weekly">("daily");
-  const [resetWeekday, setResetWeekday] = React.useState<string>("");
-  const [meridiem, setMeridiem] = React.useState<"am" | "pm">(
-    getNowParts().meridiem
-  );
-  const [hour12, setHour12] = React.useState<number>(getNowParts().hour12);
-  const [minute, setMinute] = React.useState<number>(getNowParts().minute);
-
-  const resetTime = `${pad2(to24Hour(meridiem, hour12))}:${pad2(minute)}`;
-
-  return (
-    <Sheet
-      open={open}
-      onOpenChange={(nextOpen) => {
-        setOpen(nextOpen);
-        if (nextOpen) {
-          const now = getNowParts();
-          setMeridiem(now.meridiem);
-          setHour12(now.hour12);
-          setMinute(now.minute);
-        }
-      }}
-    >
-      <SheetTrigger asChild>
-        <Button
-          type="button"
-          variant="outline"
-          className="fixed left-0 top-1/2 z-40 h-44 w-14 -translate-y-1/2 rounded-l-none rounded-r-lg border-l-0 bg-background/80 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60 flex flex-col items-center justify-center gap-2 cursor-pointer"
-          aria-label="숙제 관리 열기"
-        >
-          <PanelLeftIcon className="size-5" />
-          <span className="text-xs font-medium leading-tight text-muted-foreground text-center">
-            숙제
-            <br />
-            관리
-          </span>
-          <span className="sr-only">숙제 관리 열기</span>
-        </Button>
-      </SheetTrigger>
-
-      <SheetContent side="left" className="gap-0 p-0 flex h-full flex-col">
-        <SheetHeader className="border-b">
-          <SheetTitle>숙제 관리</SheetTitle>
-          <SheetDescription>여기서 숙제 생성/삭제를 합니다.</SheetDescription>
-        </SheetHeader>
-
-        <div className="flex min-h-0 flex-1 flex-col">
-          <div className="shrink-0 p-4">
+          <div className="sticky bottom-0 border-t bg-background p-4">
             <form
               action={createTaskAction}
               className="flex flex-col gap-3"
@@ -192,8 +115,98 @@ export default function TaskManageSheet({
                       name="reset_weekday"
                       value={resetWeekday}
                     />
+                    <Select value={resetWeekday} onValueChange={setResetWeekday}>
+                      <SelectTrigger className="w-full cursor-pointer">
+                        <SelectValue placeholder="선택" />
+                      </SelectTrigger>
+                      <SelectContent position="popper" align="start">
+                        <SelectItem value="0">일</SelectItem>
+                        <SelectItem value="1">월</SelectItem>
+                        <SelectItem value="2">화</SelectItem>
+                        <SelectItem value="3">수</SelectItem>
+                        <SelectItem value="4">목</SelectItem>
+                        <SelectItem value="5">금</SelectItem>
+                        <SelectItem value="6">토</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                ) : null}
+
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm text-muted-foreground">초기화</label>
+                  <input type="hidden" name="reset_time" value={resetTime} />
+                  <div className="flex items-center gap-2">
                     <Select
-                      value={resetWeekday}
+                      value={meridiem}
+                      onValueChange={(v) => setMeridiem(v === "pm" ? "pm" : "am")}
+                    >
+                      <SelectTrigger
+                        className="w-24 cursor-pointer"
+                        aria-label="오전/오후"
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent position="popper" align="start">
+                        <SelectItem value="am">오전</SelectItem>
+                        <SelectItem value="pm">오후</SelectItem>
+                      </SelectContent>
+                    </Select>
+
+                    <Select
+                      value={String(hour12)}
+                      onValueChange={(v) => {
+                        const parsed = Number(v);
+                        setHour12(Number.isNaN(parsed) ? 12 : parsed);
+                      }}
+                    >
+                      <SelectTrigger
+                        className="w-24 cursor-pointer"
+                        aria-label="시"
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent position="popper" align="start">
+                        {Array.from({ length: 12 }, (_, i) => i + 1).map((h) => (
+                          <SelectItem key={h} value={String(h)}>
+                            {h}시
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    <Select
+                      value={String(minute)}
+                      onValueChange={(v) => {
+                        const parsed = Number(v);
+                        setMinute(
+                          Number.isNaN(parsed)
+                            ? 0
+                            : Math.max(0, Math.min(59, parsed))
+                        );
+                      }}
+                    >
+                      <SelectTrigger
+                        className="w-28 cursor-pointer"
+                        aria-label="분"
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent position="popper" align="start">
+                        {Array.from({ length: 60 }, (_, i) => i).map((m) => (
+                          <SelectItem key={m} value={String(m)}>
+                            {pad2(m)}분
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <input type="hidden" name="timezone" value="Asia/Seoul" />
+              </div>
+            </form>
+          </div>
+        </div>
                       onValueChange={setResetWeekday}
                     >
                       <SelectTrigger className="w-full cursor-pointer">

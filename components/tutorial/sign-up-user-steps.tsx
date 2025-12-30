@@ -7,30 +7,30 @@ export function SignUpUserSteps() {
     <ol className="flex flex-col gap-6">
       {process.env.VERCEL_ENV === "preview" ||
       process.env.VERCEL_ENV === "production" ? (
-        <TutorialStep title="Set up redirect urls">
-          <p>It looks like this App is hosted on Vercel.</p>
+        <TutorialStep title="리다이렉트 URL 설정">
+          <p>이 앱은 Vercel에 배포된 것으로 보입니다.</p>
           <p className="mt-4">
-            This particular deployment is
+            현재 배포 환경은
             <span className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-medium text-secondary-foreground border">
               &quot;{process.env.VERCEL_ENV}&quot;
             </span>{" "}
-            on
+            이고, 배포 URL은
             <span className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-medium text-secondary-foreground border">
               https://{process.env.VERCEL_URL}
             </span>
             .
           </p>
           <p className="mt-4">
-            You will need to{" "}
+            Vercel 배포 URL을 기준으로 리다이렉트 URL을 등록하기 위해{" "}
             <Link
               className="text-primary hover:text-foreground"
               href={
                 "https://supabase.com/dashboard/project/_/auth/url-configuration"
               }
             >
-              update your Supabase project
+              Supabase 프로젝트 설정을 업데이트
             </Link>{" "}
-            with redirect URLs based on your Vercel deployment URLs.
+            해야 합니다.
           </p>
           <ul className="mt-4">
             <li>
@@ -53,13 +53,13 @@ export function SignUpUserSteps() {
                   "",
                 )}-*-[vercel-team-url].vercel.app/**`}
               </span>{" "}
-              (Vercel Team URL can be found in{" "}
+              (Vercel Team URL은{" "}
               <Link
                 className="text-primary hover:text-foreground"
                 href="https://vercel.com/docs/accounts/create-a-team#find-your-team-id"
                 target="_blank"
               >
-                Vercel Team settings
+                Vercel Team 설정
               </Link>
               )
             </li>
@@ -69,21 +69,21 @@ export function SignUpUserSteps() {
             target="_blank"
             className="text-primary/50 hover:text-primary flex items-center text-sm gap-1 mt-4"
           >
-            Redirect URLs Docs <ArrowUpRight size={14} />
+            리다이렉트 URL 문서 <ArrowUpRight size={14} />
           </Link>
         </TutorialStep>
       ) : null}
-      <TutorialStep title="Sign up your first user">
+      <TutorialStep title="첫 사용자 회원가입">
         <p>
-          Head over to the{" "}
+          이제{" "}
           <Link
             href="auth/sign-up"
             className="font-bold hover:underline text-foreground/80"
           >
-            Sign up
+            회원가입
           </Link>{" "}
-          page and sign up your first user. It&apos;s okay if this is just you
-          for now. Your awesome idea will have plenty of users later!
+          페이지로 이동해 첫 사용자를 만들어 보세요. 일단은 본인 계정 하나만
+          만들어도 괜찮아요. 나중에 사용자들은 얼마든지 늘릴 수 있습니다.
         </p>
       </TutorialStep>
     </ol>
