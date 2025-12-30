@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 import { createClient } from "@/lib/supabase/server";
 import { LogoutButton } from "./logout-button";
+import { MaskedEmail } from "./masked-email";
 
 export async function AuthButton() {
   const supabase = await createClient();
@@ -13,7 +14,7 @@ export async function AuthButton() {
 
   return user ? (
     <div className="flex items-center gap-4">
-      안녕하세요. {user.email}
+      안녕하세요. <MaskedEmail email={user.email ?? ""} />
       <LogoutButton />
     </div>
   ) : (
