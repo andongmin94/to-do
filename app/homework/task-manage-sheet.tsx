@@ -51,6 +51,7 @@ export default function TaskManageSheet({
   deleteTaskAction,
 }: TaskManageSheetProps) {
   const tasks = rows.filter((r) => !r.archived);
+  const [cadence, setCadence] = React.useState<"daily" | "weekly">("daily");
 
   return (
     <Sheet>
@@ -58,7 +59,7 @@ export default function TaskManageSheet({
         <Button
           type="button"
           variant="outline"
-          className="fixed left-0 top-1/2 z-40 h-44 w-14 -translate-y-1/2 rounded-l-none rounded-r-lg border-l-0 bg-background/80 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60 flex flex-col items-center justify-center gap-2"
+          className="fixed left-0 top-1/2 z-40 h-44 w-14 -translate-y-1/2 rounded-l-none rounded-r-lg border-l-0 bg-background/80 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60 flex flex-col items-center justify-center gap-2 cursor-pointer"
           aria-label="숙제 관리 열기"
         >
           <PanelLeftIcon className="size-5" />
@@ -81,47 +82,61 @@ export default function TaskManageSheet({
           <form action={createTaskAction} className="flex flex-col gap-3">
             <div className="flex gap-2">
               <Input name="title" placeholder="예) 영어단어 30개" required />
-              <Button type="submit">추가</Button>
+              <Button type="submit" className="cursor-pointer">
+                추가
+              </Button>
             </div>
 
-            <div className="flex flex-wrap gap-2 items-center">
-              <label className="text-sm text-muted-foreground">주기</label>
-              <select
-                name="cadence"
-                defaultValue="daily"
-                className="h-9 rounded-md border bg-transparent px-3 text-sm"
-              >
-                <option value="daily">매일</option>
-                <option value="weekly">매주</option>
-              </select>
+            <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-2">
+                <label className="text-sm text-muted-foreground">주기</label>
+                <select
+                  name="cadence"
+                  defaultValue="daily"
+                  className="h-9 rounded-md border bg-transparent px-3 text-sm cursor-pointer"
+                  onChange={(e) => {
+                    const next =
+                      e.target.value === "weekly" ? "weekly" : "daily";
+                    setCadence(next);
+                  }}
+                >
+                  <option value="daily">매일</option>
+                  <option value="weekly">매주</option>
+                </select>
+              </div>
 
-              <label className="text-sm text-muted-foreground">리셋</label>
-              <Input
-                name="reset_time"
-                type="time"
-                defaultValue="00:00"
-                step={60}
-                required
-                className="w-32"
-              />
-
-              <label className="text-sm text-muted-foreground">
-                요일(매주)
-              </label>
-              <select
-                name="reset_weekday"
-                defaultValue=""
-                className="h-9 rounded-md border bg-transparent px-3 text-sm"
-              >
-                <option value="">-</option>
-                <option value="0">일</option>
-                <option value="1">월</option>
-                <option value="2">화</option>
-                <option value="3">수</option>
-                <option value="4">목</option>
-                <option value="5">금</option>
-                <option value="6">토</option>
-              </select>
+              {cadence === "weekly" ? (
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm text-muted-foreground">요일</label>
+                  <select
+                    name="reset_weekday"
+                    defaultValue=""
+                    required
+                    className="h-9 rounded-md border bg-transparent px-3 text-sm cursor-pointer"
+                  >
+                    <option value="">선택</option>
+                    <option value="0">일</option>
+                    <option value="1">월</option>
+                    <option value="2">화</option>
+                    <option value="3">수</option>
+                    <option value="4">목</option>
+                    <option value="5">금</option>
+                    <option value="6">토</option>
+                  </select>
+                </div>
+              ) : null}
+              
+              <div className="flex flex-col gap-2">
+                <label className="text-sm text-muted-foreground">리셋</label>
+                <Input
+                  name="reset_time"
+                  type="time"
+                  defaultValue="00:00"
+                  step={60}
+                  required
+                  className="w-32 cursor-pointer"
+                />
+              </div>
 
               <input type="hidden" name="timezone" value="Asia/Seoul" />
             </div>
@@ -146,9 +161,21 @@ export default function TaskManageSheet({
                     </div>
                   </div>
 
-                  <form action={deleteTaskAction}>
+                  <form
+                    action={deleteTaskAction}
+                    onSubmit={(e) => {
+                      if (!confirm("정말 삭제할까요?")) {
+                        e.preventDefault();
+                      }
+                    }}
+                  >
                     <input type="hidden" name="task_id" value={row.id} />
-                    <Button type="submit" variant="destructive" size="sm">
+                    <Button
+                      type="submit"
+                      variant="destructive"
+                      size="sm"
+                      className="cursor-pointer"
+                    >
                       삭제
                     </Button>
                   </form>

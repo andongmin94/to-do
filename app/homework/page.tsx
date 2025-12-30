@@ -88,7 +88,9 @@ export default async function TasksPage() {
 
                 <form action={toggleTask}>
                   <input type="hidden" name="task_id" value={row.id} />
-                  <Button type="submit">완료</Button>
+                  <Button type="submit" className="cursor-pointer">
+                    완료
+                  </Button>
                 </form>
               </div>
             ))
