@@ -65,6 +65,8 @@ export default async function TasksPage() {
 
   const rows = (data ?? []) as TaskStatusRow[];
   const activeRows = rows.filter((row) => !row.archived && !row.is_done);
+  const dailyRows = activeRows.filter((row) => row.cadence === "daily");
+  const nonDailyRows = activeRows.filter((row) => row.cadence !== "daily");
 
   return (
     <>
@@ -90,26 +92,71 @@ export default async function TasksPage() {
               지금 해야 할 숙제가 없어요.
             </p>
           ) : (
-            activeRows.map((row) => (
-              <div
-                key={row.id}
-                className="flex items-center justify-between gap-3 rounded-md border p-3"
-              >
-                <div className="min-w-0">
-                  <div className="font-medium truncate">{row.title}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {formatCadence(row)} {/* · TZ: {row.timezone} */}
-                  </div>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <section className="flex flex-col gap-2">
+                <div className="text-sm font-semibold text-muted-foreground">
+                  매일
                 </div>
+                {dailyRows.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">
+                    매일 숙제가 없어요.
+                  </p>
+                ) : (
+                  dailyRows.map((row) => (
+                    <div
+                      key={row.id}
+                      className="flex items-center justify-between gap-3 rounded-md border p-3"
+                    >
+                      <div className="min-w-0">
+                        <div className="font-medium truncate">{row.title}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {formatCadence(row)}
+                        </div>
+                      </div>
 
-                <form action={toggleTask}>
-                  <input type="hidden" name="task_id" value={row.id} />
-                  <Button type="submit" className="cursor-pointer">
-                    완료
-                  </Button>
-                </form>
-              </div>
-            ))
+                      <form action={toggleTask}>
+                        <input type="hidden" name="task_id" value={row.id} />
+                        <Button type="submit" className="cursor-pointer">
+                          완료
+                        </Button>
+                      </form>
+                    </div>
+                  ))
+                )}
+              </section>
+
+              <section className="flex flex-col gap-2">
+                <div className="text-sm font-semibold text-muted-foreground">
+                  매주
+                </div>
+                {nonDailyRows.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">
+                    매주 숙제가 없어요.
+                  </p>
+                ) : (
+                  nonDailyRows.map((row) => (
+                    <div
+                      key={row.id}
+                      className="flex items-center justify-between gap-3 rounded-md border p-3"
+                    >
+                      <div className="min-w-0">
+                        <div className="font-medium truncate">{row.title}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {formatCadence(row)}
+                        </div>
+                      </div>
+
+                      <form action={toggleTask}>
+                        <input type="hidden" name="task_id" value={row.id} />
+                        <Button type="submit" className="cursor-pointer">
+                          완료
+                        </Button>
+                      </form>
+                    </div>
+                  ))
+                )}
+              </section>
+            </div>
           )}
         </div>
       </div>
