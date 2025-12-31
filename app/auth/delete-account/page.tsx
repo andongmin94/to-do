@@ -10,13 +10,11 @@ export const metadata = {
 };
 
 export default function Page() {
-  const enabled = Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY);
-
   return (
     <div className="mt-20 flex w-full items-center justify-center p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-4">
         <DeleteAccountForm
-          enabled={enabled}
+          enabled={true}
           deleteAccountAction={deleteAccount}
         />
         <Button asChild variant="outline">

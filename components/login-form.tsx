@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 export function LoginForm({
@@ -25,6 +26,8 @@ export function LoginForm({
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const reason = searchParams.get("reason");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,6 +59,12 @@ export function LoginForm({
           <CardDescription>이메일과 비밀번호로 로그인하세요.</CardDescription>
         </CardHeader>
         <CardContent>
+          {reason === "deleted" ? (
+            <p className="mb-4 rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
+              탈퇴 처리된 계정입니다. 로그인만으로는 복구되지 않습니다. 다시
+              이용하려면 회원가입에서 동일 이메일로 가입을 진행해 주세요.
+            </p>
+          ) : null}
           <form onSubmit={handleLogin}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">

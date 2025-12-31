@@ -17,9 +17,10 @@ import { useState } from "react";
 
 export function ForgotPasswordForm({
   className,
+  initialEmail,
   ...props
-}: React.ComponentPropsWithoutRef<"div">) {
-  const [email, setEmail] = useState("");
+}: React.ComponentPropsWithoutRef<"div"> & { initialEmail?: string }) {
+  const [email, setEmail] = useState(initialEmail ?? "");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

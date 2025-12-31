@@ -43,48 +43,113 @@ create table if not exists public.task_log (
 
 create index if not exists task_log_user_id_idx on public.task_log (user_id);
 
+-- 2.5) Tables: user_profile (소프트 딜리트/재활성화 상태)
+create table if not exists public.user_profile (
+  user_id uuid primary key references auth.users (id) on delete cascade,
+  deleted_at timestamptz null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists user_profile_deleted_at_idx on public.user_profile (deleted_at);
+
 -- 3) RLS 설정
 alter table public.task enable row level security;
 alter table public.task_log enable row level security;
+alter table public.user_profile enable row level security;
 
+-- user_profile: 본인 row 읽기/쓰기 허용
 do $$
 begin
   if not exists (
-    select 1 from pg_policies where schemaname='public' and tablename='task' and policyname='task is owned by user'
+    select 1 from pg_policies where schemaname='public' and tablename='user_profile' and policyname='profile is owned by user'
   ) then
-    create policy "task is owned by user"
-      on public.task
-      for all
-      using (auth.uid() = user_id)
+    create policy "profile is owned by user"
+      on public.user_profile
+      for select
+      using (auth.uid() = user_id);
+  end if;
+
+  if not exists (
+    select 1 from pg_policies where schemaname='public' and tablename='user_profile' and policyname='profile can be inserted by user'
+  ) then
+    create policy "profile can be inserted by user"
+      on public.user_profile
+      for insert
       with check (auth.uid() = user_id);
   end if;
 
   if not exists (
-    select 1 from pg_policies where schemaname='public' and tablename='task_log' and policyname='log is owned by user'
+    select 1 from pg_policies where schemaname='public' and tablename='user_profile' and policyname='profile can be updated by user'
   ) then
-    create policy "log is owned by user"
-      on public.task_log
-      for all
-      using (
-        auth.uid() = user_id
-        and exists (
-          select 1
-          from public.task t
-          where t.id = task_log.task_id
-            and t.user_id = auth.uid()
-        )
-      )
-      with check (
-        auth.uid() = user_id
-        and exists (
-          select 1
-          from public.task t
-          where t.id = task_log.task_id
-            and t.user_id = auth.uid()
-        )
-      );
+    create policy "profile can be updated by user"
+      on public.user_profile
+      for update
+      using (auth.uid() = user_id)
+      with check (auth.uid() = user_id);
   end if;
 end $$;
+
+-- 탈퇴 계정은 task/task_log 접근 차단
+drop policy if exists "task is owned by user" on public.task;
+create policy "task is owned by user"
+  on public.task
+  for all
+  using (
+    auth.uid() = user_id
+    and not exists (
+      select 1
+      from public.user_profile p
+      where p.user_id = auth.uid()
+        and p.deleted_at is not null
+    )
+  )
+  with check (
+    auth.uid() = user_id
+    and not exists (
+      select 1
+      from public.user_profile p
+      where p.user_id = auth.uid()
+        and p.deleted_at is not null
+    )
+  );
+
+drop policy if exists "log is owned by user" on public.task_log;
+create policy "log is owned by user"
+  on public.task_log
+  for all
+  using (
+    auth.uid() = user_id
+    and not exists (
+      select 1
+      from public.user_profile p
+      where p.user_id = auth.uid()
+        and p.deleted_at is not null
+    )
+    and exists (
+      select 1
+      from public.task t
+      where t.id = task_log.task_id
+        and t.user_id = auth.uid()
+    )
+  )
+  with check (
+    auth.uid() = user_id
+    and not exists (
+      select 1
+      from public.user_profile p
+      where p.user_id = auth.uid()
+        and p.deleted_at is not null
+    )
+    and exists (
+      select 1
+      from public.task t
+      where t.id = task_log.task_id
+        and t.user_id = auth.uid()
+    )
+  );
+
+-- (기존 정책 생성 블록은 위에서 drop/create로 대체)
 
 -- 4) 함수: 구간 계산
 create or replace function public.compute_period_start(

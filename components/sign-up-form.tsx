@@ -24,6 +24,7 @@ export function SignUpForm({
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [resetEmail, setResetEmail] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -35,6 +36,7 @@ export function SignUpForm({
     const supabase = createClient();
     setIsLoading(true);
     setError(null);
+    setResetEmail(null);
 
     if (password !== repeatPassword) {
       setError("비밀번호가 일치하지 않습니다.");
@@ -50,7 +52,40 @@ export function SignUpForm({
           emailRedirectTo: `${siteUrl}/auth/confirm?next=/`,
         },
       });
-      if (error) throw error;
+      if (error) {
+        // 이미 가입된 이메일이면(소프트 딜리트 복구 포함) 로그인으로 전환 시도
+        const alreadyRegistered =
+          /already\s*registered|user\s*already\s*registered|already\s*exists/i.test(
+            error.message
+          );
+
+        if (alreadyRegistered) {
+          const { error: signInError } = await supabase.auth.signInWithPassword(
+            {
+              email,
+              password,
+            }
+          );
+
+          if (signInError) {
+            setResetEmail(email);
+            throw new Error("이미 가입된 이메일입니다. 비밀번호를 재설정해 주세요.");
+          }
+
+          try {
+            await fetch("/auth/reactivate", { method: "POST" });
+          } catch {
+            // ignore
+          }
+
+          router.replace("/");
+          router.refresh();
+          return;
+        }
+
+        throw error;
+      }
+
       router.push("/auth/sign-up-success");
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "오류가 발생했습니다.");
@@ -105,6 +140,16 @@ export function SignUpForm({
                 />
               </div>
               {error && <p className="text-sm text-red-500">{error}</p>}
+              {resetEmail ? (
+                <p className="text-sm">
+                  <Link
+                    href={`/auth/forgot-password?email=${encodeURIComponent(resetEmail)}`}
+                    className="underline underline-offset-4"
+                  >
+                    비밀번호 재설정으로 이동
+                  </Link>
+                </p>
+              ) : null}
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "계정 생성 중..." : "회원가입"}
               </Button>
