@@ -92,15 +92,15 @@ export function LoginForm({
                 {isLoading ? "로그인 중..." : "로그인"}
               </Button>
             </div>
-            {/* <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
+            <div className="mt-4 text-center text-sm">
+              아직 계정이 없나요?{" "}
               <Link
                 href="/auth/sign-up"
                 className="underline underline-offset-4"
               >
-                Sign up
+                회원가입
               </Link>
-            </div> */}
+            </div>
           </form>
         </CardContent>
       </Card>

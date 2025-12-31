@@ -10,14 +10,14 @@ import {
 } from "@/components/ui/card";
 
 export const metadata = {
-  title: "소개",
+  title: "사용법",
 };
 
 export default function AboutPage() {
   return (
     <div className="flex w-full flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-bold">숙제 캘린더</h1>
+        <h1 className="text-2xl font-bold">TO DO</h1>
         <p className="text-muted-foreground text-sm">
           반복되는 숙제(할 일)를 등록해두고, 완료 버튼으로 체크하는 개인용 관리
           앱입니다. 매일/매주 같은 주기로 자동 초기화돼서 “다시 해야 할 것”이

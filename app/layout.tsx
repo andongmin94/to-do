@@ -81,19 +81,19 @@ export default function RootLayout({
                     <Link href={"/"} className="flex items-center gap-2">
                       <Image
                         src="/logo.svg"
-                        alt="숙제 캘린더 로고"
+                        alt="TO DO 로고"
                         width={28}
                         height={28}
                         priority
                       />
-                      <span>숙제 캘린더</span>
+                      <span>TO DO</span>
                     </Link>
 
                     <Link
                       href={"/about"}
                       className="text-muted-foreground hover:text-foreground text-sm font-medium"
                     >
-                      소개
+                      사용법
                     </Link>
                   </div>
                   {!hasEnvVars ? (
