@@ -16,7 +16,7 @@ export function SignUpUserSteps() {
             </span>{" "}
             이고, 배포 URL은
             <span className="bg-muted text-secondary-foreground relative rounded border px-[0.3rem] py-[0.2rem] font-mono text-xs font-medium">
-              https://{process.env.VERCEL_URL}
+              https://to-do.andongmin.com
             </span>
             .
           </p>
