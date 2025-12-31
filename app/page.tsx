@@ -2,6 +2,8 @@ import { createClient } from "@/lib/supabase/server";
 
 import LoginCheck from "@/components/login-check";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import Link from "next/link";
 
 import TaskManageSheet from "./task-manage-sheet";
 import { createTask, deleteTask, toggleTask } from "./actions";
@@ -18,6 +20,14 @@ type TaskStatusRow = {
   period_start: string;
   is_done: boolean;
 };
+
+function decodeQueryValue(value: string) {
+  try {
+    return decodeURIComponent(value.replace(/\+/g, " "));
+  } catch {
+    return value;
+  }
+}
 
 function formatKoreanTime(timeValue: string) {
   const match = /^([01]\d|2[0-3]):([0-5]\d)/.exec(timeValue);
@@ -49,7 +59,34 @@ function formatCadence(row: TaskStatusRow) {
   return `매주 ${weekdayLabel} ${timeLabel} 초기화`;
 }
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams?: Promise<{
+    error?: string;
+    error_code?: string;
+    error_description?: string;
+  }>;
+}) {
+  const params = await searchParams;
+  const errorCode =
+    typeof params?.error_code === "string" ? params.error_code : undefined;
+  const errorDescription =
+    typeof params?.error_description === "string"
+      ? decodeQueryValue(params.error_description)
+      : undefined;
+  const errorType = typeof params?.error === "string" ? params.error : undefined;
+
+  const showAuthError = Boolean(errorCode || errorType);
+  const title =
+    errorCode === "otp_expired"
+      ? "링크가 만료되었습니다"
+      : "인증에 실패했습니다";
+  const description =
+    errorCode === "otp_expired"
+      ? "이메일 링크가 만료되었거나 이미 사용되었습니다. 비밀번호 재설정을 다시 요청해 주세요."
+      : errorDescription || "요청을 처리할 수 없습니다. 다시 시도해 주세요.";
+
   const supabase = await createClient();
 
   const { data, error } = await supabase.rpc("get_task_current_status");
@@ -72,6 +109,22 @@ export default async function Home() {
     <>
       <LoginCheck />
       <div className="flex w-full flex-1 flex-col gap-6">
+        {showAuthError ? (
+          <Alert variant="destructive">
+            <AlertTitle>{title}</AlertTitle>
+            <AlertDescription>
+              <p>{description}</p>
+              <p>
+                <Link
+                  href="/auth/forgot-password"
+                  className="underline underline-offset-4"
+                >
+                  비밀번호 재설정 다시 요청
+                </Link>
+              </p>
+            </AlertDescription>
+          </Alert>
+        ) : null}
         <div className="flex items-start justify-between gap-3">
           <div>
             <h1 className="text-2xl font-bold">숙제</h1>

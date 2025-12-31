@@ -28,15 +28,25 @@ export function SignUpForm({
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL?.trim();
-
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     const supabase = createClient();
     setIsLoading(true);
     setError(null);
     setResetEmail(null);
+
+    const siteUrl =
+      typeof window !== "undefined"
+        ? window.location.origin
+        : process.env.NEXT_PUBLIC_SITE_URL?.trim() || "";
+
+    if (!siteUrl) {
+      setError(
+        "사이트 URL을 확인할 수 없습니다. NEXT_PUBLIC_SITE_URL 환경변수를 설정해 주세요."
+      );
+      setIsLoading(false);
+      return;
+    }
 
     if (password !== repeatPassword) {
       setError("비밀번호가 일치하지 않습니다.");

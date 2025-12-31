@@ -25,14 +25,24 @@ export function ForgotPasswordForm({
   const [success, setSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL?.trim();
-
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     const supabase = createClient();
     setIsLoading(true);
     setError(null);
+
+    const siteUrl =
+      typeof window !== "undefined"
+        ? window.location.origin
+        : process.env.NEXT_PUBLIC_SITE_URL?.trim() || "";
+
+    if (!siteUrl) {
+      setError(
+        "사이트 URL을 확인할 수 없습니다. NEXT_PUBLIC_SITE_URL 환경변수를 설정해 주세요."
+      );
+      setIsLoading(false);
+      return;
+    }
 
     try {
       // The url which will be included in the email. This URL needs to be configured in your redirect URLs in the Supabase dashboard at https://supabase.com/dashboard/project/_/auth/url-configuration
