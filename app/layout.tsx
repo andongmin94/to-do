@@ -4,15 +4,12 @@ import { ThemeProvider } from "next-themes";
 import Link from "next/link";
 import { Suspense } from "react";
 
+import { siteConfig } from "@/config/site";
 import { AuthButton } from "@/components/auth-button";
 import { EnvVarWarning } from "@/components/env-var-warning";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { hasEnvVars } from "@/lib/utils";
 import "./globals.css";
-
-const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "http://localhost:3000";
 
 const pretendard = localFont({
   src: "./fonts/PretendardVariable.woff2",
@@ -22,9 +19,43 @@ const pretendard = localFont({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(defaultUrl),
-  title: "Next.js and Supabase Starter Kit",
-  description: "The fastest way to build apps with Next.js and Supabase",
+  title: {
+    default: siteConfig.name,
+    template: `%s - ${siteConfig.name}`,
+  },
+  description: siteConfig.description,
+  authors: [
+    {
+      name: "andongmin",
+    },
+  ],
+  creator: "andongmin",
+  metadataBase: new URL(siteConfig.url),
+  openGraph: {
+    type: "website",
+    locale: "ko_KR",
+    url: siteConfig.url,
+    title: siteConfig.name,
+    description: siteConfig.description,
+    siteName: siteConfig.name,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.name,
+    description: siteConfig.description,
+    images: [siteConfig.ogImage],
+    creator: "@andongmin94",
+  },
+  icons: [
+    { rel: "icon", url: "/logo.png" },
+    { rel: "apple-touch-icon", url: "/logo.png" },
+  ],
+  manifest: "/manifest.json",
+  other: {
+    "Content-Security-Policy": "frame-ancestors 'self' https://www.google.com;",
+    "google-adsense-account": "ca-pub-3991720287946515",
+    "naver-site-verification": "0f799a18e200c62de5c826e13cb45b7aed11aea1",
+  },
 };
 
 export default function RootLayout({
