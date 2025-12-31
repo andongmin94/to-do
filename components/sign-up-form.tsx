@@ -28,7 +28,7 @@ export function SignUpForm({
   const router = useRouter();
 
   const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL?.trim() || window.location.origin;
+    process.env.NEXT_PUBLIC_SITE_URL?.trim();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();

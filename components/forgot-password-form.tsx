@@ -25,7 +25,7 @@ export function ForgotPasswordForm({
   const [isLoading, setIsLoading] = useState(false);
 
   const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL?.trim() || window.location.origin;
+    process.env.NEXT_PUBLIC_SITE_URL?.trim();
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();

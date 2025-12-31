@@ -15,6 +15,9 @@ export async function AuthButton() {
   return user ? (
     <div className="flex items-center gap-4">
       안녕하세요. <MaskedEmail email={user.email ?? ""} />
+      <Button asChild size="sm" variant="outline">
+        <Link href="/auth/delete-account">회원탈퇴</Link>
+      </Button>
       <LogoutButton />
     </div>
   ) : (
@@ -22,9 +25,9 @@ export async function AuthButton() {
       <Button asChild size="sm" variant={"outline"}>
         <Link href="/auth/login">로그인</Link>
       </Button>
-      {/* <Button asChild size="sm" variant={"default"}>
+      <Button asChild size="sm" variant={"default"}>
         <Link href="/auth/sign-up">회원가입</Link>
-      </Button> */}
+      </Button>
     </div>
   );
 }
