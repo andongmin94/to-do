@@ -57,17 +57,17 @@ export function FetchDataSteps() {
           Supabase 프로젝트의{" "}
           <a
             href="https://supabase.com/dashboard/project/_/editor"
-            className="font-bold hover:underline text-foreground/80"
+            className="text-foreground/80 font-bold hover:underline"
             target="_blank"
             rel="noreferrer"
           >
             테이블 에디터
           </a>{" "}
-          로 이동해서 테이블을 만들고 예시 데이터를 넣어보세요. 예시가 필요하다면
-          아래 내용을{" "}
+          로 이동해서 테이블을 만들고 예시 데이터를 넣어보세요. 예시가
+          필요하다면 아래 내용을{" "}
           <a
             href="https://supabase.com/dashboard/project/_/sql/new"
-            className="font-bold hover:underline text-foreground/80"
+            className="text-foreground/80 font-bold hover:underline"
             target="_blank"
             rel="noreferrer"
           >
@@ -81,11 +81,11 @@ export function FetchDataSteps() {
       <TutorialStep title="Row Level Security(RLS) 설정">
         <p>
           Supabase는 기본적으로 Row Level Security(RLS)가 활성화되어 있습니다.
-          <code>notes</code> 테이블에서 데이터를 조회하려면 정책(policy)을 추가해야
-          합니다. 이는{" "}
+          <code>notes</code> 테이블에서 데이터를 조회하려면 정책(policy)을
+          추가해야 합니다. 이는{" "}
           <a
             href="https://supabase.com/dashboard/project/_/editor"
-            className="font-bold hover:underline text-foreground/80"
+            className="text-foreground/80 font-bold hover:underline"
             target="_blank"
             rel="noreferrer"
           >
@@ -94,7 +94,7 @@ export function FetchDataSteps() {
           또는{" "}
           <a
             href="https://supabase.com/dashboard/project/_/sql/new"
-            className="font-bold hover:underline text-foreground/80"
+            className="text-foreground/80 font-bold hover:underline"
             target="_blank"
             rel="noreferrer"
           >
@@ -103,14 +103,15 @@ export function FetchDataSteps() {
           에서 설정할 수 있습니다.
         </p>
         <p>
-          예를 들어, 아래 SQL을 실행하면 누구나 읽을 수 있도록 설정할 수 있습니다.
+          예를 들어, 아래 SQL을 실행하면 누구나 읽을 수 있도록 설정할 수
+          있습니다.
         </p>
         <CodeBlock code={rls} />
         <p>
           RLS에 대한 자세한 내용은{" "}
           <a
             href="https://supabase.com/docs/guides/auth/row-level-security"
-            className="font-bold hover:underline text-foreground/80"
+            className="text-foreground/80 font-bold hover:underline"
             target="_blank"
             rel="noreferrer"
           >
@@ -122,9 +123,9 @@ export function FetchDataSteps() {
 
       <TutorialStep title="Next.js에서 Supabase 데이터 조회">
         <p>
-          Supabase 클라이언트를 만들고 Async Server Component에서 데이터를 조회하려면
-          아래 경로에 page.tsx 파일을 새로 만들고{" "}
-          <span className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-medium text-secondary-foreground border">
+          Supabase 클라이언트를 만들고 Async Server Component에서 데이터를
+          조회하려면 아래 경로에 page.tsx 파일을 새로 만들고{" "}
+          <span className="bg-muted text-secondary-foreground relative rounded border px-[0.3rem] py-[0.2rem] font-mono text-xs font-medium">
             /app/notes/page.tsx
           </span>{" "}
           다음 코드를 추가하세요.
@@ -139,12 +140,12 @@ export function FetchDataSteps() {
           아래의{" "}
           <a
             href="https://supabase.com/ui"
-            className="font-bold hover:underline text-foreground/80"
+            className="text-foreground/80 font-bold hover:underline"
           >
             Supabase UI 라이브러리
           </a>{" "}
-          에서 블록을 설치해 보세요. 예를 들어, 아래 명령으로 Realtime Chat 블록을
-          설치할 수 있습니다.
+          에서 블록을 설치해 보세요. 예를 들어, 아래 명령으로 Realtime Chat
+          블록을 설치할 수 있습니다.
         </p>
         <CodeBlock
           code={

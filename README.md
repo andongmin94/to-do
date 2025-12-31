@@ -36,6 +36,7 @@ npm install
 ### 3) 환경변수 설정
 
 **프로젝트 루트에 `.env.local` 생성**
+
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=...
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=...
@@ -66,6 +67,7 @@ Prettier가 포맷 대상에서 제외할 경로는 보통 루트의 `.prettieri
 (작성 방식은 `.gitignore`랑 거의 동일합니다.)
 
 **예시**
+
 ```gitignore
 # dependencies / build
 node_modules/
@@ -80,6 +82,7 @@ package-lock.json
 ```
 
 **추가로, 스크립트에서 무시 파일을 강제 지정하고 싶으면**
+
 ```json
 "prettier": "prettier --write . --ignore-path .prettierignore"
 ```

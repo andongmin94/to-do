@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import localFont from "next/font/local";
 import { ThemeProvider } from "next-themes";
 import Link from "next/link";
@@ -77,7 +78,23 @@ export default function RootLayout({
               <nav className="border-b-foreground/10 flex h-16 w-full justify-center border-b">
                 <div className="flex w-full max-w-5xl items-center justify-between p-3 px-5 text-sm">
                   <div className="flex items-center gap-5 font-semibold">
-                    <Link href={"/"}>숙제 캘린더</Link>
+                    <Link href={"/"} className="flex items-center gap-2">
+                      <Image
+                        src="/logo.svg"
+                        alt="숙제 캘린더 로고"
+                        width={28}
+                        height={28}
+                        priority
+                      />
+                      <span>숙제 캘린더</span>
+                    </Link>
+
+                    <Link
+                      href={"/about"}
+                      className="text-muted-foreground hover:text-foreground text-sm font-medium"
+                    >
+                      소개
+                    </Link>
                   </div>
                   {!hasEnvVars ? (
                     <EnvVarWarning />
