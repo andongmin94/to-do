@@ -48,9 +48,7 @@ export function UpdatePasswordForm({
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">비밀번호 재설정</CardTitle>
-          <CardDescription>
-            새 비밀번호를 입력해 주세요.
-          </CardDescription>
+          <CardDescription>새 비밀번호를 입력해 주세요.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleForgotPassword}>

@@ -53,9 +53,7 @@ export function LoginForm({
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">로그인</CardTitle>
-          <CardDescription>
-            이메일과 비밀번호로 로그인하세요.
-          </CardDescription>
+          <CardDescription>이메일과 비밀번호로 로그인하세요.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin}>

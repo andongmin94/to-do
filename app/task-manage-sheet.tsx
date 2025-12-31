@@ -186,13 +186,18 @@ export default function TaskManageSheet({
 
                 {cadence === "weekly" ? (
                   <div className="flex flex-col gap-2">
-                    <label className="text-muted-foreground text-sm">요일</label>
+                    <label className="text-muted-foreground text-sm">
+                      요일
+                    </label>
                     <input
                       type="hidden"
                       name="reset_weekday"
                       value={resetWeekday}
                     />
-                    <Select value={resetWeekday} onValueChange={setResetWeekday}>
+                    <Select
+                      value={resetWeekday}
+                      onValueChange={setResetWeekday}
+                    >
                       <SelectTrigger className="w-full cursor-pointer">
                         <SelectValue placeholder="선택" />
                       </SelectTrigger>
@@ -210,7 +215,9 @@ export default function TaskManageSheet({
                 ) : null}
 
                 <div className="flex flex-col gap-2">
-                  <label className="text-muted-foreground text-sm">초기화</label>
+                  <label className="text-muted-foreground text-sm">
+                    초기화
+                  </label>
                   <input type="hidden" name="reset_time" value={resetTime} />
                   <div className="flex items-center gap-2">
                     <Select
@@ -245,11 +252,13 @@ export default function TaskManageSheet({
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent position="popper" align="start">
-                        {Array.from({ length: 12 }, (_, i) => i + 1).map((h) => (
-                          <SelectItem key={h} value={String(h)}>
-                            {h}시
-                          </SelectItem>
-                        ))}
+                        {Array.from({ length: 12 }, (_, i) => i + 1).map(
+                          (h) => (
+                            <SelectItem key={h} value={String(h)}>
+                              {h}시
+                            </SelectItem>
+                          )
+                        )}
                       </SelectContent>
                     </Select>
 

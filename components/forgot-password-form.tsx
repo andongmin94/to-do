@@ -53,8 +53,9 @@ export function ForgotPasswordForm({
             <CardDescription>비밀번호 재설정 안내를 보냈어요.</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground">
-              이메일과 비밀번호로 가입하셨다면 비밀번호 재설정 이메일이 발송됩니다.
+            <p className="text-muted-foreground text-sm">
+              이메일과 비밀번호로 가입하셨다면 비밀번호 재설정 이메일이
+              발송됩니다.
             </p>
           </CardContent>
         </Card>
