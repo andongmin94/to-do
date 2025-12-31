@@ -27,6 +27,9 @@ export function SignUpForm({
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() || window.location.origin;
+
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     const supabase = createClient();
@@ -44,7 +47,7 @@ export function SignUpForm({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/confirm?next=/`,
+          emailRedirectTo: `${siteUrl}/auth/confirm?next=/`,
         },
       });
       if (error) throw error;
