@@ -14,20 +14,23 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+
+type LoginFormProps = React.ComponentPropsWithoutRef<"div"> & {
+  initialReason?: string;
+};
 
 export function LoginForm({
   className,
+  initialReason,
   ...props
-}: React.ComponentPropsWithoutRef<"div">) {
+}: LoginFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const reason = searchParams.get("reason");
+  const reason = initialReason;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
