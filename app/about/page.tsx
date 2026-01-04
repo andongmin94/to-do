@@ -122,7 +122,7 @@ export default function AboutPage() {
         </Button>
         <Button asChild>
           <a
-            href="https://github.com/andongmin94"
+            href="https://github.com/andongmin94/to-do"
             target="_blank"
             rel="noreferrer"
           >
